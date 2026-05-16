@@ -34,6 +34,8 @@ function ThemeToggle() {
 const NAV = [
   { href: "/tenders",     label: "Browse"      },
   { href: "/suspicious",  label: "Suspicious"  },
+  { href: "/spending",    label: "Spending"    },
+  { href: "/profiles",    label: "Profiles"    },
   { href: "/verifier",    label: "Verifier"    },
   { href: "/leaderboard", label: "Leaderboard" },
 ];

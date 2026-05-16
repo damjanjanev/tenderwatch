@@ -9,8 +9,9 @@ import { FlagModal } from "@/components/FlagModal";
 import { FlagList } from "@/components/FlagList";
 import { getTender } from "@/lib/tenders";
 import { useTenderFlags } from "@/lib/store";
+import { getProfilesForContractor } from "@/lib/profiles";
 import { formatEUR, formatDate } from "@/lib/utils";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { ArrowLeft, ExternalLink, AlertTriangle } from "lucide-react";
 
 export default function TenderDetailPage() {
   const params = useParams<{ id: string }>();
@@ -21,6 +22,7 @@ export default function TenderDetailPage() {
 
   const verified = flags.find((f) => f.status === "VerifiedSuspicious");
   const communityFlagged = !verified && flags.some((f) => f.status === "Pending");
+  const linkedProfiles = getProfilesForContractor(tender.contractor);
 
   return (
     <div className="container py-12 max-w-3xl animate-fade-in">
@@ -52,6 +54,34 @@ export default function TenderDetailPage() {
         <Meta label="Published" value={formatDate(tender.publishedAt)} />
         <Meta label="Deadline" value={formatDate(tender.deadline)} />
       </div>
+
+      {/* Cross-reference banner */}
+      {linkedProfiles.length > 0 && (
+        <div className="border border-oxblood/40 bg-oxblood/5 rounded-sm p-4 mb-8 flex items-start gap-3">
+          <AlertTriangle className="h-4 w-4 text-oxblood shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm font-semibold text-ink mb-1">
+              This contractor is connected to a political profile
+            </p>
+            <div className="space-y-0.5">
+              {linkedProfiles.map((profile) => {
+                const link = profile.companies.find(
+                  (c) => c.companyName.toLowerCase() === tender.contractor.toLowerCase()
+                );
+                return (
+                  <p key={profile.slug} className="text-xs text-muted">
+                    <Link href={`/profiles/${profile.slug}`} className="text-oxblood hover:underline font-semibold">
+                      {profile.fullName}
+                    </Link>
+                    {" "}({profile.position})
+                    {link && ` — ${link.relation}${link.relatedName ? ` (${link.relatedName})` : ""}`}
+                  </p>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
 
       <article className="font-serif text-lg leading-relaxed text-ink/90 mb-10">
         {tender.description}
