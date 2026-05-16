@@ -24,7 +24,7 @@
 
 /* ── Dark theme ────────────────────────────────────────────────────────────── */
 .dark {
-  --color-paper:   10  10  10;    /* #0A0A0A */
+  --color-paper:   9   8   7;     /* #090807 — very dark warm base for orbs to glow against */
   --color-surface: 20  20  20;    /* #141414 */
   --color-sand:    38  38  38;    /* #262626 */
   --color-ink:     237 237 237;   /* #EDEDED */
@@ -48,6 +48,12 @@ html, body {
   color: rgb(var(--color-ink));
 }
 
+/* Dark mode: html holds the base color, body is transparent so
+   the fixed gradient layer (z-index 0) shows through */
+.dark html { background-color: rgb(var(--color-paper)); }
+.dark body { background-color: transparent; }
+
+
 body {
   font-family: var(--font-sans), system-ui, sans-serif;
   line-height: 1.6;
@@ -55,6 +61,7 @@ body {
 }
 
 .font-tabular { font-variant-numeric: tabular-nums; }
+
 
 /* ── Wallet adapter ────────────────────────────────────────────────────────── */
 .wallet-adapter-button {
