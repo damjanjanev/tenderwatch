@@ -13,26 +13,32 @@ const WalletButton = dynamic(
 
 export function SiteHeader() {
   return (
-    <header className="border-b border-sand bg-paper/95 backdrop-blur sticky top-0 z-40">
-      <div className="container flex h-16 items-center justify-between gap-4">
-        <Link href="/" className="flex items-center gap-2 group shrink-0">
-          <Eye className="h-5 w-5 text-ink transition-transform group-hover:scale-110" />
-          <span className="font-serif text-xl tracking-tight">TenderWatch</span>
+    <header className="bg-ink text-paper sticky top-0 z-40">
+      <div className="container flex h-14 items-center justify-between gap-4">
+        <Link href="/" className="flex items-center gap-2.5 group shrink-0">
+          <Eye className="h-4 w-4 text-paper/80 group-hover:text-paper transition-colors" />
+          <span className="font-sans font-bold text-sm tracking-tight text-paper">
+            TenderWatch
+          </span>
         </Link>
-        <nav className="hidden md:flex items-center gap-7 text-sm">
-          <Link href="/tenders" className="text-ink hover:text-ink/70 transition-colors">
-            Browse
-          </Link>
-          <Link href="/suspicious" className="text-ink hover:text-ink/70 transition-colors">
-            Suspicious
-          </Link>
-          <Link href="/verifier" className="text-ink hover:text-ink/70 transition-colors">
-            Verifier
-          </Link>
-          <Link href="/leaderboard" className="text-ink hover:text-ink/70 transition-colors">
-            Leaderboard
-          </Link>
+
+        <nav className="hidden md:flex items-center gap-6 text-[13px]">
+          {[
+            { href: "/tenders",     label: "Browse" },
+            { href: "/suspicious",  label: "Suspicious" },
+            { href: "/verifier",    label: "Verifier" },
+            { href: "/leaderboard", label: "Leaderboard" },
+          ].map(({ href, label }) => (
+            <Link
+              key={href}
+              href={href}
+              className="text-paper/60 hover:text-paper transition-colors font-medium"
+            >
+              {label}
+            </Link>
+          ))}
         </nav>
+
         <div className="flex items-center gap-3">
           {isOnChainMode() && (
             <div className="hidden sm:block">

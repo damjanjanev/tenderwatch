@@ -17,17 +17,18 @@ export type FlagCategory = (typeof FLAG_CATEGORIES)[number];
 // ── Badge tiers ────────────────────────────────────────────────────────────────
 export type BadgeTier = {
   name: string;
-  emoji: string;
+  icon: "shield" | "search" | "scale" | "award";
   minFlags: number;
   votingWeight: number;
   colorClass: string;
+  bgClass: string;
 };
 
 export const BADGE_TIERS: BadgeTier[] = [
-  { name: "Street Watchdog",    emoji: "🐕", minFlags: 10,  votingWeight: 1.5, colorClass: "text-amber-600" },
-  { name: "Civic Investigator", emoji: "🔍", minFlags: 25,  votingWeight: 2,   colorClass: "text-blue-600"  },
-  { name: "Justice Guardian",   emoji: "⚖️", minFlags: 50,  votingWeight: 3,   colorClass: "text-purple-600"},
-  { name: "Civic Champion",     emoji: "🏆", minFlags: 100, votingWeight: 4,   colorClass: "text-yellow-500"},
+  { name: "Street Watchdog",    icon: "shield", minFlags: 10,  votingWeight: 1.5, colorClass: "text-slate-700",  bgClass: "bg-slate-100"  },
+  { name: "Civic Investigator", icon: "search", minFlags: 25,  votingWeight: 2,   colorClass: "text-blue-700",   bgClass: "bg-blue-50"    },
+  { name: "Justice Guardian",   icon: "scale",  minFlags: 50,  votingWeight: 3,   colorClass: "text-violet-700", bgClass: "bg-violet-50"  },
+  { name: "Civic Champion",     icon: "award",  minFlags: 100, votingWeight: 4,   colorClass: "text-amber-700",  bgClass: "bg-amber-50"   },
 ];
 
 // ── Core types ─────────────────────────────────────────────────────────────────

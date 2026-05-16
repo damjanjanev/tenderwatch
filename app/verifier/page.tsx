@@ -14,7 +14,11 @@ import { getTender } from "@/lib/tenders";
 import { formatEUR, relativeTime, explorerTx, truncateAddress, isOnChainMode, mockTxSignature } from "@/lib/utils";
 import { sendMemo } from "@/lib/solana/memo";
 import { toast } from "sonner";
-import { CheckCircle, XCircle, ExternalLink, ShieldCheck, Link2 } from "lucide-react";
+import { CheckCircle, XCircle, ExternalLink, ShieldCheck, Link2, Shield, Search, Scale, Award, LucideIcon } from "lucide-react";
+
+const ICON_MAP: Record<string, LucideIcon> = {
+  shield: Shield, search: Search, scale: Scale, award: Award,
+};
 
 export default function VerifierPage() {
   const mounted = useHasMounted();
@@ -184,8 +188,8 @@ export default function VerifierPage() {
                       <span>Flagged by:</span>
                       <span className="font-mono">{truncateAddress(flag.flaggerWallet)}</span>
                       {flaggerBadge ? (
-                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-sand/60 border border-sand text-[11px]">
-                          {flaggerBadge.emoji} {flaggerBadge.name}
+                        <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm text-[11px] font-medium ${flaggerBadge.bgClass} ${flaggerBadge.colorClass}`}>
+                          {(() => { const I = ICON_MAP[flaggerBadge.icon]; return <I className="h-3 w-3" />; })()} {flaggerBadge.name}
                         </span>
                       ) : (
                         <span className="text-muted/60">

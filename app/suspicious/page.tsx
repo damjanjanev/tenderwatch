@@ -1,12 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import { Shield, Search, Scale, Award, LucideIcon, ExternalLink, Link2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { BadgeDisplay } from "@/components/BadgeDisplay";
 import { useFlags, useHasMounted, getBadgeTier } from "@/lib/store";
 import { getTender } from "@/lib/tenders";
 import { formatEUR, relativeTime, explorerTx, truncateAddress } from "@/lib/utils";
-import { ExternalLink, Link2 } from "lucide-react";
+
+const ICON_MAP: Record<string, LucideIcon> = {
+  shield: Shield, search: Search, scale: Scale, award: Award,
+};
 
 export default function SuspiciousPage() {
   const mounted = useHasMounted();
@@ -96,7 +100,7 @@ export default function SuspiciousPage() {
                   </span>
                   {flaggerBadge && (
                     <span className="inline-flex items-center gap-1 text-xs px-1.5 py-0.5 rounded-full bg-sand/60 border border-sand">
-                      {flaggerBadge.emoji} {flaggerBadge.name}
+                      {(() => { const I = ICON_MAP[flaggerBadge.icon]; return <I className={`h-3 w-3 ${flaggerBadge.colorClass}`} />; })()} {flaggerBadge.name}
                     </span>
                   )}
                 </div>
@@ -162,7 +166,7 @@ export default function SuspiciousPage() {
                     <span>By {truncateAddress(flag.flaggerWallet)}</span>
                     {flaggerBadge && (
                       <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-sand/60 border border-sand text-[11px]">
-                        {flaggerBadge.emoji} {flaggerBadge.name}
+                        {(() => { const I = ICON_MAP[flaggerBadge.icon]; return <I className={`h-3 w-3 ${flaggerBadge.colorClass}`} />; })()} {flaggerBadge.name}
                       </span>
                     )}
                     {flag.evidenceUrl && (
