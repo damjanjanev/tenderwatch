@@ -2,84 +2,84 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Light theme (default) ─────────────────────────────────────────────────── */
 :root {
-  --background: 0 0% 100%;
-  --foreground: 240 10% 4%;
-  --card: 0 0% 100%;
-  --card-foreground: 240 10% 4%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 240 10% 4%;
-  --primary: 240 10% 4%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 220 14% 96%;
-  --secondary-foreground: 240 10% 4%;
-  --muted: 220 14% 96%;
-  --muted-foreground: 220 9% 46%;
-  --accent: 220 14% 96%;
-  --accent-foreground: 240 10% 4%;
-  --destructive: 0 72% 51%;
-  --destructive-foreground: 0 0% 100%;
-  --border: 220 13% 91%;
-  --input: 220 13% 91%;
-  --ring: 240 10% 4%;
+  --color-paper:   249 249 249;   /* #F9F9F9 */
+  --color-surface: 255 255 255;   /* #FFFFFF */
+  --color-sand:    229 229 229;   /* #E5E5E5 */
+  --color-ink:     10  10  10;    /* #0A0A0A */
+  --color-muted:   107 114 128;   /* #6B7280 */
+  --color-danger:  220 38  38;    /* #DC2626 */
+  --color-success: 22  163 74;    /* #16A34A */
+  --color-accent:  201 145 16;    /* #C99110 */
+
+  /* shadcn vars */
+  --background: 0 0% 98%;
+  --foreground: 0 0% 4%;
+  --border: 0 0% 90%;
+  --input: 0 0% 90%;
+  --ring: 0 0% 4%;
   --radius: 0.125rem;
 }
 
-* {
-  border-color: hsl(var(--border));
+/* ── Dark theme ────────────────────────────────────────────────────────────── */
+.dark {
+  --color-paper:   10  10  10;    /* #0A0A0A */
+  --color-surface: 20  20  20;    /* #141414 */
+  --color-sand:    38  38  38;    /* #262626 */
+  --color-ink:     237 237 237;   /* #EDEDED */
+  --color-muted:   113 113 113;   /* #717171 */
+  --color-danger:  248 113 113;   /* #F87171 */
+  --color-success: 74  222 128;   /* #4ADE80 */
+  --color-accent:  234 179 8;     /* #EAB308 */
+
+  /* shadcn vars */
+  --background: 0 0% 4%;
+  --foreground: 0 0% 93%;
+  --border: 0 0% 15%;
+  --input: 0 0% 15%;
+  --ring: 0 0% 93%;
 }
 
+* { border-color: rgb(var(--color-sand)); }
+
 html, body {
-  background-color: #FFFFFF;
-  color: #0A0A0A;
+  background-color: rgb(var(--color-paper));
+  color: rgb(var(--color-ink));
 }
 
 body {
   font-family: var(--font-sans), system-ui, sans-serif;
   line-height: 1.6;
-  font-feature-settings: "ss01", "cv11";
   -webkit-font-smoothing: antialiased;
 }
 
-.font-tabular {
-  font-variant-numeric: tabular-nums;
-}
+.font-tabular { font-variant-numeric: tabular-nums; }
 
-/* Wallet adapter */
+/* ── Wallet adapter ────────────────────────────────────────────────────────── */
 .wallet-adapter-button {
-  background-color: #0A0A0A !important;
-  color: #FFFFFF !important;
+  background-color: rgb(var(--color-ink)) !important;
+  color: rgb(var(--color-paper)) !important;
   border-radius: 3px !important;
   font-family: var(--font-sans), system-ui, sans-serif !important;
   font-size: 13px !important;
-  font-weight: 500 !important;
-  height: 36px !important;
+  font-weight: 600 !important;
+  height: 34px !important;
   padding: 0 14px !important;
   letter-spacing: 0.01em !important;
   transition: opacity 0.15s ease !important;
 }
-
-.wallet-adapter-button:not([disabled]):hover {
-  background-color: #1A1A1A !important;
-  opacity: 0.9 !important;
-}
-
-.wallet-adapter-button-trigger {
-  background-color: #0A0A0A !important;
-}
+.wallet-adapter-button:not([disabled]):hover { opacity: 0.75 !important; }
+.wallet-adapter-button-trigger { background-color: rgb(var(--color-ink)) !important; }
 
 .wallet-adapter-dropdown-list {
-  background-color: #FFFFFF !important;
-  border: 1px solid #E5E7EB !important;
+  background-color: rgb(var(--color-surface)) !important;
+  border: 1px solid rgb(var(--color-sand)) !important;
   border-radius: 3px !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15) !important;
 }
-
-.wallet-adapter-modal-wrapper {
-  background-color: #FFFFFF !important;
-}
-
+.wallet-adapter-modal-wrapper { background-color: rgb(var(--color-surface)) !important; }
 .wallet-adapter-modal-title {
-  color: #0A0A0A !important;
+  color: rgb(var(--color-ink)) !important;
   font-family: var(--font-sans) !important;
 }
