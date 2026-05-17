@@ -9,46 +9,46 @@ import { useTheme } from "next-themes";
 ─────────────────────────────────────────────────────────────────────────── */
 const BLOBS = [
   {
-    // Gold — large, top-left
+    // Electric blue — large, top-left
     cx: 0.05, cy: 0.05,
     mxSpeed: 0.00022, mySpeed: 0.00018, mxRange: 0.22, myRange: 0.18, mxPhase: 0.0, myPhase: 1.2,
-    baseRadius: 560,
-    r: 234, g: 179, b: 8, opacity: 0.30,
+    baseRadius: 580,
+    r: 59, g: 130, b: 246, opacity: 0.28,   // blue-500
   },
   {
-    // Deep orange — right side
+    // Indigo — right side
     cx: 0.90, cy: 0.45,
     mxSpeed: 0.00018, mySpeed: 0.00025, mxRange: 0.18, myRange: 0.25, mxPhase: 2.1, myPhase: 0.8,
-    baseRadius: 500,
-    r: 251, g: 100, b: 20, opacity: 0.25,
+    baseRadius: 520,
+    r: 99, g: 102, b: 241, opacity: 0.26,   // indigo-500
   },
   {
-    // Crimson — bottom
+    // Violet — bottom center
     cx: 0.55, cy: 0.95,
     mxSpeed: 0.00025, mySpeed: 0.00015, mxRange: 0.28, myRange: 0.18, mxPhase: 3.5, myPhase: 2.0,
-    baseRadius: 530,
-    r: 200, g: 20, b: 20, opacity: 0.28,
+    baseRadius: 540,
+    r: 139, g: 92, b: 246, opacity: 0.30,   // violet-500
   },
   {
-    // Rose/magenta — center left
+    // Purple — center left
     cx: 0.15, cy: 0.65,
     mxSpeed: 0.00020, mySpeed: 0.00022, mxRange: 0.20, myRange: 0.22, mxPhase: 1.8, myPhase: 3.3,
-    baseRadius: 420,
-    r: 220, g: 38, b: 120, opacity: 0.20,
+    baseRadius: 440,
+    r: 168, g: 85, b: 247, opacity: 0.22,   // purple-500
   },
   {
-    // Warm purple — top right
+    // Cyan — top right
     cx: 0.82, cy: 0.08,
     mxSpeed: 0.00030, mySpeed: 0.00020, mxRange: 0.16, myRange: 0.20, mxPhase: 4.2, myPhase: 1.5,
-    baseRadius: 400,
-    r: 160, g: 40, b: 220, opacity: 0.18,
+    baseRadius: 420,
+    r: 6, g: 182, b: 212, opacity: 0.20,    // cyan-500
   },
   {
-    // Amber — bottom left
+    // Sky blue — bottom left
     cx: 0.08, cy: 0.88,
     mxSpeed: 0.00016, mySpeed: 0.00019, mxRange: 0.18, myRange: 0.15, mxPhase: 5.0, myPhase: 0.3,
-    baseRadius: 460,
-    r: 234, g: 150, b: 8, opacity: 0.22,
+    baseRadius: 470,
+    r: 96, g: 165, b: 250, opacity: 0.22,   // blue-400
   },
 ];
 

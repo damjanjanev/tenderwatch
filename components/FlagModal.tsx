@@ -52,8 +52,6 @@ export function FlagModal({ tenderId }: { tenderId: string }) {
         reasonHash,
         txSignature: signature,
         createdAt: new Date().toISOString(),
-        status: "Pending",
-        votes: [],
       });
       toast.success(
         isOnChainMode() ? "Flag recorded on Solana Devnet" : "Flag submitted",
@@ -101,7 +99,7 @@ export function FlagModal({ tenderId }: { tenderId: string }) {
           <DialogTitle>Flag this tender as suspicious</DialogTitle>
           <DialogDescription>
             Your flag will be publicly visible immediately as &ldquo;Community Flagged.&rdquo;
-            A journalist or NGO verifier will review it — if validated, it moves to Verified Suspicious.
+            A journalist or NGO verifier will review it — if confirmed, it moves to Verified Suspicious.
           </DialogDescription>
         </DialogHeader>
 
@@ -114,7 +112,7 @@ export function FlagModal({ tenderId }: { tenderId: string }) {
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value as FlagCategory)}
-              className="w-full rounded-md border border-sand bg-paper px-3 py-2 text-sm text-ink focus:outline-none focus:ring-1 focus:ring-ink"
+              className="w-full rounded-sm border border-sand bg-paper px-3 py-2 text-sm text-ink focus:outline-none focus:border-ink/40 transition-colors"
             >
               <option value="">Select a reason…</option>
               {FLAG_CATEGORIES.map((cat) => (
@@ -132,10 +130,10 @@ export function FlagModal({ tenderId }: { tenderId: string }) {
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               placeholder="Be specific. E.g. 'The per-km cost is 2.3× the EU benchmark and the same contractor won 8 of the last 10 road bids in this region.'"
-              className="font-serif text-base min-h-[100px]"
+              className="text-sm min-h-[100px]"
             />
             <div className="flex items-center justify-between text-xs">
-              <span className={reason.length < MIN_LEN ? "text-oxblood" : "text-forest"}>
+              <span className={reason.length < MIN_LEN ? "text-muted" : "text-accent"}>
                 {reason.length} / {MIN_LEN} minimum characters
               </span>
               <a
@@ -159,9 +157,10 @@ export function FlagModal({ tenderId }: { tenderId: string }) {
               value={evidenceUrl}
               onChange={(e) => setEvidenceUrl(e.target.value)}
               placeholder="https://ipfs.io/ipfs/… or https://…"
-              className="w-full rounded-md border border-sand bg-paper px-3 py-2 text-sm text-ink font-mono focus:outline-none focus:ring-1 focus:ring-ink"
+              className="w-full rounded-sm border border-sand bg-paper px-3 py-2 text-sm text-ink font-mono focus:outline-none focus:border-ink/40 transition-colors"
             />
           </div>
+
         </div>
 
         <DialogFooter>

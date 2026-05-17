@@ -2,43 +2,41 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Light theme (default) ─────────────────────────────────────────────────── */
+/* ── Light theme ────────────────────────────────────────────────────────────── */
 :root {
-  --color-paper:   249 249 249;   /* #F9F9F9 */
-  --color-surface: 255 255 255;   /* #FFFFFF */
-  --color-sand:    229 229 229;   /* #E5E5E5 */
-  --color-ink:     10  10  10;    /* #0A0A0A */
-  --color-muted:   107 114 128;   /* #6B7280 */
-  --color-danger:  220 38  38;    /* #DC2626 */
-  --color-success: 22  163 74;    /* #16A34A */
-  --color-accent:  201 145 16;    /* #C99110 */
+  --color-paper:   249 249 249;
+  --color-surface: 255 255 255;
+  --color-sand:    229 229 229;
+  --color-ink:     10  10  10;
+  --color-muted:   107 114 128;
+  --color-danger:  220 38  38;
+  --color-success: 22  163 74;
+  --color-accent:  0   100 200;
 
-  /* shadcn vars */
   --background: 0 0% 98%;
   --foreground: 0 0% 4%;
   --border: 0 0% 90%;
   --input: 0 0% 90%;
-  --ring: 0 0% 4%;
+  --ring: 210 100% 50%;
   --radius: 0.125rem;
 }
 
-/* ── Dark theme ────────────────────────────────────────────────────────────── */
+/* ── Dark theme — Turing blue ───────────────────────────────────────────────── */
 .dark {
-  --color-paper:   9   8   7;     /* #090807 — very dark warm base for orbs to glow against */
-  --color-surface: 20  20  20;    /* #141414 */
-  --color-sand:    38  38  38;    /* #262626 */
-  --color-ink:     237 237 237;   /* #EDEDED */
-  --color-muted:   113 113 113;   /* #717171 */
-  --color-danger:  248 113 113;   /* #F87171 */
-  --color-success: 74  222 128;   /* #4ADE80 */
-  --color-accent:  234 179 8;     /* #EAB308 */
+  --color-paper:   10  10  10;    /* #0A0A0A */
+  --color-surface: 17  17  17;    /* #111111 */
+  --color-sand:    40  40  40;    /* #282828 */
+  --color-ink:     240 240 240;   /* #F0F0F0 */
+  --color-muted:   184 184 184;   /* #B8B8B8 */
+  --color-danger:  248 113 113;
+  --color-success: 74  222 128;
+  --color-accent:  0   132 255;   /* #0084FF — Turing blue */
 
-  /* shadcn vars */
   --background: 0 0% 4%;
-  --foreground: 0 0% 93%;
-  --border: 0 0% 15%;
-  --input: 0 0% 15%;
-  --ring: 0 0% 93%;
+  --foreground: 0 0% 94%;
+  --border: 0 0% 16%;
+  --input: 0 0% 12%;
+  --ring: 210 100% 56%;
 }
 
 * { border-color: rgb(var(--color-sand)); }
@@ -48,44 +46,69 @@ html, body {
   color: rgb(var(--color-ink));
 }
 
-/* Dark mode: html holds the base color, body is transparent so
-   the fixed gradient layer (z-index 0) shows through */
-.dark html { background-color: rgb(var(--color-paper)); }
-.dark body { background-color: transparent; }
-
-
 body {
   font-family: var(--font-sans), system-ui, sans-serif;
-  line-height: 1.6;
+  font-size: 15px;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
 }
 
 .font-tabular { font-variant-numeric: tabular-nums; }
 
+/* ── Cards ─────────────────────────────────────────────────────────────────── */
+.card-solid {
+  background-color: rgb(var(--color-surface));
+  border: 1px solid rgb(var(--color-sand));
+  border-radius: 3px;
+}
 
-/* ── Wallet adapter ────────────────────────────────────────────────────────── */
+.dark .card-solid {
+  background-color: rgba(17,17,17,0.95);
+  border-color: rgba(40,40,40,0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 2px 24px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,132,255,0.05);
+}
+
+/* ── Wallet adapter ─────────────────────────────────────────────────────────── */
 .wallet-adapter-button {
   background-color: rgb(var(--color-ink)) !important;
   color: rgb(var(--color-paper)) !important;
-  border-radius: 3px !important;
+  border-radius: 6px !important;
   font-family: var(--font-sans), system-ui, sans-serif !important;
   font-size: 13px !important;
   font-weight: 600 !important;
-  height: 34px !important;
-  padding: 0 14px !important;
-  letter-spacing: 0.01em !important;
-  transition: opacity 0.15s ease !important;
+  height: 36px !important;
+  padding: 0 16px !important;
+  transition: all 0.2s ease !important;
 }
-.wallet-adapter-button:not([disabled]):hover { opacity: 0.75 !important; }
+
+.dark .wallet-adapter-button {
+  background-color: #0084ff !important;
+  color: #fff !important;
+  border: none !important;
+}
+.dark .wallet-adapter-button-trigger {
+  background-color: #0084ff !important;
+  color: #fff !important;
+}
+
+.wallet-adapter-button:not([disabled]):hover {
+  opacity: 0.85 !important;
+  transform: translateX(1px) !important;
+}
 .wallet-adapter-button-trigger { background-color: rgb(var(--color-ink)) !important; }
 
 .wallet-adapter-dropdown-list {
-  background-color: rgb(var(--color-surface)) !important;
-  border: 1px solid rgb(var(--color-sand)) !important;
-  border-radius: 3px !important;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.15) !important;
+  background-color: #111 !important;
+  border: 1px solid rgba(0,132,255,0.15) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.7) !important;
 }
-.wallet-adapter-modal-wrapper { background-color: rgb(var(--color-surface)) !important; }
+.wallet-adapter-modal-wrapper {
+  background-color: #111 !important;
+  border: 1px solid rgba(0,132,255,0.12) !important;
+}
 .wallet-adapter-modal-title {
   color: rgb(var(--color-ink)) !important;
   font-family: var(--font-sans) !important;

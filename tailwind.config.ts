@@ -23,6 +23,10 @@ const config: Config = {
         forest:  "rgb(var(--color-success) / <alpha-value>)",
         accent:  "rgb(var(--color-accent)  / <alpha-value>)",
         border:  "rgb(var(--color-sand)    / <alpha-value>)",
+        // Hero purple direct aliases
+        "hero-purple": "#9b87f5",
+        "hero-bg":     "#0a0613",
+        "hero-surface":"#150d27",
       },
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
@@ -39,8 +43,8 @@ const config: Config = {
         },
       },
       animation: {
-        "fade-in":  "fade-in 0.3s ease-out",
-        "pulse-dot": "pulse-dot 2s ease-in-out infinite",
+        "fade-in":    "fade-in 0.3s ease-out",
+        "pulse-dot":  "pulse-dot 2s ease-in-out infinite",
       },
     },
   },

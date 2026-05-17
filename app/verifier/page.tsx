@@ -1,297 +1,137 @@
-"use client";
+﻿"use client";
 
-import { useState } from "react";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import Link from "next/link";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { BadgeDisplay } from "@/components/BadgeDisplay";
-import {
-  useFlags, useHasMounted, isVerifier, addVote,
-  getBadgeTier, getValidatedFlagCount,
-} from "@/lib/store";
+import { isVerifier, useHasMounted } from "@/lib/store";
+import { useAllTenderReports, getTenderReportStatus, getJournalistStats } from "@/lib/tenderReports";
 import { getTender } from "@/lib/tenders";
-import { formatEUR, relativeTime, explorerTx, truncateAddress, isOnChainMode, mockTxSignature } from "@/lib/utils";
-import { sendMemo } from "@/lib/solana/memo";
-import { toast } from "sonner";
-import { CheckCircle, XCircle, ExternalLink, ShieldCheck, Link2, Shield, Search, Scale, Award, LucideIcon } from "lucide-react";
-
-const ICON_MAP: Record<string, LucideIcon> = {
-  shield: Shield, search: Search, scale: Scale, award: Award,
-};
+import { formatEUR, relativeTime, explorerTx, truncateAddress } from "@/lib/utils";
+import { ShieldCheck, AlertTriangle, CheckCircle, ThumbsUp, ExternalLink, Link2, Star } from "lucide-react";
 
 export default function VerifierPage() {
   const mounted = useHasMounted();
-  const { connection } = useConnection();
-  const wallet = useWallet();
-  const { publicKey, connected } = wallet;
-  const flags = useFlags();
-  const [pendingTx, setPendingTx] = useState<string | null>(null);
-
+  const { publicKey, connected } = useWallet();
+  const allReports = useAllTenderReports();
   const myAddress = publicKey?.toBase58();
   const verifier = isVerifier(myAddress);
 
-  const handleVote = async (flagId: string, verdict: "Validate" | "Reject") => {
-    if (!myAddress || pendingTx) return;
-    setPendingTx(flagId);
-    const toastId = `vote-${flagId}`;
-    try {
-      let signature: string;
-      if (isOnChainMode()) {
-        toast.loading("Sending vote to Solana devnet…", { id: toastId });
-        const memo = `TenderWatch|VOTE|${flagId}|${verdict}`;
-        ({ signature } = await sendMemo(connection, wallet, memo));
-      } else {
-        signature = mockTxSignature();
-      }
-      addVote(flagId, {
-        flagId,
-        verifierWallet: myAddress,
-        verdict,
-        txSignature: signature,
-        createdAt: new Date().toISOString(),
-      });
-      toast.success(
-        verdict === "Validate"
-          ? "✅ Flag validated — tender is now Verified Suspicious"
-          : "🗑️ Flag rejected — marked as spam",
-        {
-          id: toastId,
-          description: isOnChainMode()
-            ? "Your decision is now part of the on-chain record."
-            : "Demo mode — decision saved locally.",
-          action: isOnChainMode()
-            ? { label: "View tx", onClick: () => window.open(explorerTx(signature), "_blank") }
-            : undefined,
-        },
-      );
-    } catch (e) {
-      toast.error("Vote failed", {
-        id: toastId,
-        description: e instanceof Error ? e.message : "Unknown error",
-      });
-    } finally {
-      setPendingTx(null);
-    }
-  };
-
   if (!mounted) return null;
+  if (!connected) return <EmptyState title="Journalist dashboard" body="Connect your Phantom wallet to see your reports and credibility score. Journalist access is gated." />;
+  if (!verifier) return <EmptyState title="Not a verified journalist" body={`The wallet ${truncateAddress(myAddress ?? "")} is not in the verifier allowlist.`} />;
 
-  if (!connected) {
-    return (
-      <EmptyState
-        title="Verifier dashboard"
-        body="Connect your Phantom wallet to review flagged tenders. Verifier access is gated by an allowlist — credentials are issued to known journalists and NGOs."
-      />
-    );
-  }
-
-  if (!verifier) {
-    return (
-      <EmptyState
-        title="Not a verifier"
-        body={`The wallet ${truncateAddress(myAddress || "")} is not in the verifier allowlist. Verifier credentials are issued to known journalists and NGOs.`}
-      />
-    );
-  }
-
-  const pending = flags.filter((f) => f.status === "Pending");
-  const voted = flags.filter((f) =>
-    f.votes.some((v) => v.verifierWallet === myAddress),
-  );
+  const myReports = allReports.filter((r) => r.journalistWallet === myAddress);
+  const stats = getJournalistStats(myAddress!);
 
   return (
-    <div className="container py-12 max-w-3xl animate-fade-in">
-      <div className="flex items-center gap-3 mb-3">
-        <ShieldCheck className="h-5 w-5 text-forest" />
-        <p className="text-xs uppercase tracking-[0.25em] text-muted">Verifier dashboard</p>
-      </div>
-      <h1 className="font-serif text-4xl md:text-5xl tracking-tight mb-3">
-        Review citizen flags
-      </h1>
-      <p className="text-muted max-w-2xl mb-8">
-        You are the final check. Validate a flag to move it to the public Suspicious board —
-        the citizen who flagged it earns a badge point toward their Watchdog rank.
-      </p>
-
-      {/* Verifier's own badge */}
-      {myAddress && (
-        <div className="mb-10">
-          <BadgeDisplay walletAddress={myAddress} />
+    <div className="min-h-screen bg-[#080c1a] text-white">
+      <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 0, background: "radial-gradient(ellipse at 50% 0%, rgba(0,132,255,0.07) 0%, transparent 55%)" }} />
+      <div className="relative z-10 max-w-3xl mx-auto px-6 py-14">
+        <div className="flex items-center gap-2 mb-4">
+          <ShieldCheck className="h-4 w-4 text-[#0084ff]" />
+          <span className="text-[#0084ff] text-[11px] uppercase tracking-[0.25em] font-medium">Journalist dashboard</span>
         </div>
-      )}
+        <h1 className="text-4xl md:text-5xl font-light tracking-tight text-white mb-4">My reports</h1>
+        <p className="text-[#b8b8b8] max-w-2xl mb-8 leading-relaxed">
+          Your published tender reports, credibility score, and contribution to the public record.
+          Each report you write influences a tender status — reports from multiple journalists determine the final verdict.
+        </p>
 
-      <Tabs defaultValue="pending">
-        <TabsList>
-          <TabsTrigger value="pending">Pending ({pending.length})</TabsTrigger>
-          <TabsTrigger value="voted">Voted ({voted.length})</TabsTrigger>
-        </TabsList>
+        {myAddress && <div className="mb-8"><BadgeDisplay walletAddress={myAddress} /></div>}
 
-        <TabsContent value="pending">
-          {pending.length === 0 ? (
-            <div className="border border-dashed border-sand rounded-md p-12 text-center">
-              <p className="text-muted">No pending flags right now.</p>
-            </div>
-          ) : (
-            <div className="space-y-6">
-              {pending.map((flag) => {
-                const tender = getTender(flag.tenderId);
-                if (!tender) return null;
-                const flaggerBadge = getBadgeTier(flag.flaggerWallet);
-                const flaggerCount = getValidatedFlagCount(flag.flaggerWallet);
-                return (
-                  <article key={flag.id} className="border border-sand rounded-md p-6 bg-surface space-y-4">
-                    {/* Header row */}
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <Badge variant="pending">Community Flagged</Badge>
-                      {flag.category && (
-                        <span className="inline-flex items-center text-xs px-2 py-0.5 rounded-full bg-sand/50 border border-sand text-ink/70">
-                          {flag.category}
-                        </span>
-                      )}
-                      <span className="text-xs text-muted">{relativeTime(flag.createdAt)}</span>
-                    </div>
+        <div className="rounded-xl border border-white/[0.06] p-6 mb-10 grid grid-cols-2 sm:grid-cols-4 gap-6" style={{ background: "rgba(255,255,255,0.02)" }}>
+          <Stat label="Reports" value={stats.reportCount} icon={<ShieldCheck className="h-4 w-4 text-white/30" />} />
+          <Stat label="Total likes" value={stats.totalLikes} icon={<ThumbsUp className="h-4 w-4 text-white/30" />} />
+          <Stat label="Accurate" value={stats.accurateCount} icon={<CheckCircle className="h-4 w-4 text-white/30" />} />
+          <Stat label="Credibility" value={stats.credibilityScore} icon={<Star className="h-4 w-4 text-[#0084ff]" />} highlight />
+        </div>
 
-                    {/* Tender info */}
-                    <div>
-                      <h3 className="font-serif text-xl leading-tight tracking-tight mb-1">
-                        {tender.title}
-                      </h3>
-                      <div className="text-xs text-muted font-mono">
-                        {formatEUR(tender.amountEUR)} · {tender.contractor} · {tender.ministry}
-                      </div>
-                    </div>
-
-                    {/* Reason */}
-                    <p className="font-serif italic text-ink/85 leading-relaxed border-l-2 border-sand pl-4 break-words overflow-hidden">
-                      &ldquo;{flag.reasonText}&rdquo;
-                    </p>
-
-                    {/* Evidence link */}
-                    {flag.evidenceUrl && (
-                      <a
-                        href={flag.evidenceUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="inline-flex items-center gap-1.5 text-xs text-muted hover:text-ink break-all"
-                      >
-                        <Link2 className="h-3 w-3" />
-                        Evidence: {flag.evidenceUrl.length > 60
-                          ? flag.evidenceUrl.slice(0, 57) + "…"
-                          : flag.evidenceUrl}
-                        <ExternalLink className="h-3 w-3" />
-                      </a>
+        {myReports.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-white/10 p-12 text-center">
+            <ShieldCheck className="h-8 w-8 text-white/20 mx-auto mb-4" />
+            <p className="text-white/40 mb-4">You have not submitted any reports yet.</p>
+            <Link href="/tenders" className="text-[#0084ff] hover:underline underline-offset-4">Browse tenders to report on</Link>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {[...myReports].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((report) => {
+              const tender = getTender(report.tenderId);
+              if (!tender) return null;
+              const tenderReports = allReports.filter((r) => r.tenderId === report.tenderId);
+              const tenderStatus = getTenderReportStatus(tenderReports);
+              const conclusionIsSuspicious = report.conclusion === "Suspicious";
+              const accurate = (conclusionIsSuspicious && tenderStatus === "VerifiedSuspicious") || (!conclusionIsSuspicious && tenderStatus === "Clean");
+              return (
+                <article key={report.id} className="rounded-xl border border-white/[0.06] p-5" style={{ background: "rgba(255,255,255,0.02)" }}>
+                  <div className="flex items-center gap-2 flex-wrap mb-3">
+                    {conclusionIsSuspicious
+                      ? <span className="inline-flex items-center gap-1 text-xs font-semibold text-red-400 border border-red-500/30 bg-red-500/5 px-2 py-0.5 rounded-md"><AlertTriangle className="h-3 w-3" /> Suspicious</span>
+                      : <span className="inline-flex items-center gap-1 text-xs font-semibold text-white/40 border border-white/[0.08] px-2 py-0.5 rounded-md"><CheckCircle className="h-3 w-3" /> Not Suspicious</span>
+                    }
+                    {tenderStatus === "VerifiedSuspicious" && <Badge variant="suspicious">Tender: Verified Suspicious</Badge>}
+                    {tenderStatus === "UnderReview" && <Badge variant="pending">Tender: Under Review</Badge>}
+                    {tenderStatus === "Clean" && <span className="text-[11px] px-2 py-0.5 rounded-md border border-white/[0.08] text-white/40 font-medium">Tender: Clean</span>}
+                    {(tenderStatus === "VerifiedSuspicious" || tenderStatus === "Clean") && (
+                      accurate
+                        ? <span className="inline-flex items-center gap-1 text-[11px] text-[#0084ff] font-semibold px-1.5 py-0.5 rounded-md bg-[#0084ff]/10 border border-[#0084ff]/30"><CheckCircle className="h-3 w-3" /> Accurate</span>
+                        : <span className="inline-flex items-center gap-1 text-[11px] text-white/30 px-1.5 py-0.5 rounded-md border border-white/[0.06]">Inaccurate</span>
                     )}
+                    <span className="text-xs text-white/30 ml-auto">{relativeTime(report.createdAt)}</span>
+                  </div>
+                  <Link href={`/tenders/${report.tenderId}`} className="block group mb-1">
+                    <h3 className="text-lg font-light leading-tight tracking-tight text-white group-hover:text-[#0084ff] transition-colors">{tender.title}</h3>
+                  </Link>
+                  <p className="text-xs text-white/40 font-mono mb-3">{formatEUR(tender.amountEUR)} · {tender.ministry}</p>
+                  <p className="text-sm text-white/60 leading-relaxed border-l-2 border-white/[0.06] pl-3 mb-3 break-words">
+                    {report.reportText.length > 220 ? report.reportText.slice(0, 217) + "..." : report.reportText}
+                  </p>
+                  {report.evidenceLinks.length > 0 && (
+                    <a href={report.evidenceLinks[0]} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-xs text-white/40 hover:text-[#0084ff] mb-3 transition-colors">
+                      <Link2 className="h-3 w-3" /> Evidence <ExternalLink className="h-3 w-3" />
+                    </a>
+                  )}
+                  <div className="flex items-center gap-4 text-xs text-white/30 border-t border-white/[0.06] pt-3 mt-1">
+                    <span className="inline-flex items-center gap-1"><ThumbsUp className="h-3 w-3" />{report.likes.length} like{report.likes.length !== 1 ? "s" : ""}</span>
+                    <a href={explorerTx(report.txSignature)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 hover:text-white transition-colors">On-chain record <ExternalLink className="h-3 w-3" /></a>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        )}
 
-                    {/* Flagger info */}
-                    <div className="flex items-center gap-2 text-xs text-muted border-t border-sand pt-3">
-                      <span>Flagged by:</span>
-                      <span className="font-mono">{truncateAddress(flag.flaggerWallet)}</span>
-                      {flaggerBadge ? (
-                        <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm text-[11px] font-medium ${flaggerBadge.bgClass} ${flaggerBadge.colorClass}`}>
-                          {(() => { const I = ICON_MAP[flaggerBadge.icon]; return <I className="h-3 w-3" />; })()} {flaggerBadge.name}
-                        </span>
-                      ) : (
-                        <span className="text-muted/60">
-                          ({flaggerCount} validated flag{flaggerCount !== 1 ? "s" : ""})
-                        </span>
-                      )}
-                    </div>
+        <div className="mt-12 border-t border-white/[0.06] pt-8">
+          <h2 className="text-xl font-light tracking-tight mb-4 text-white/50">How credibility is scored</h2>
+          <div className="space-y-2 text-sm text-white/40">
+            <p><span className="font-semibold text-white">+1</span> per report submitted</p>
+            <p><span className="font-semibold text-white">+1</span> for every 5 likes received across all reports</p>
+            <p><span className="font-semibold text-white">+2</span> per report whose conclusion matched the final tender verdict</p>
+            <p className="text-xs text-white/20 pt-2">Score = reports + floor(likes / 5) + accurate x 2</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
-                    {/* Action buttons */}
-                    <div className="flex gap-2 justify-end pt-1">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleVote(flag.id, "Reject")}
-                        disabled={pendingTx !== null}
-                      >
-                        <XCircle className="h-4 w-4" />
-                        {pendingTx === flag.id ? "Sending…" : "Reject"}
-                      </Button>
-                      <Button
-                        variant="forest"
-                        size="sm"
-                        onClick={() => handleVote(flag.id, "Validate")}
-                        disabled={pendingTx !== null}
-                      >
-                        <CheckCircle className="h-4 w-4" />
-                        {pendingTx === flag.id ? "Sending…" : "Validate"}
-                      </Button>
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
-          )}
-        </TabsContent>
-
-        <TabsContent value="voted">
-          {voted.length === 0 ? (
-            <div className="border border-dashed border-sand rounded-md p-12 text-center">
-              <p className="text-muted">You haven&apos;t voted on any flags yet.</p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {voted.map((flag) => {
-                const myVote = flag.votes.find((v) => v.verifierWallet === myAddress);
-                const tender = getTender(flag.tenderId);
-                if (!tender || !myVote) return null;
-                return (
-                  <article key={flag.id} className="border-l-2 border-sand pl-5 py-2">
-                    <div className="flex items-center gap-2 mb-2 flex-wrap">
-                      <Badge
-                        variant={
-                          flag.status === "VerifiedSuspicious"
-                            ? "suspicious"
-                            : flag.status === "DismissedAsSpam"
-                              ? "dismissed"
-                              : "pending"
-                        }
-                      >
-                        {flag.status === "VerifiedSuspicious"
-                          ? "Verified Suspicious"
-                          : flag.status === "DismissedAsSpam"
-                            ? "Dismissed"
-                            : "Still pending"}
-                      </Badge>
-                      <span className={`text-xs font-medium ${myVote.verdict === "Validate" ? "text-forest" : "text-oxblood"}`}>
-                        You: {myVote.verdict === "Validate" ? "✅ Validated" : "🗑️ Rejected"}
-                      </span>
-                    </div>
-                    <h4 className="font-serif text-lg leading-tight mb-1">{tender.title}</h4>
-                    {flag.category && (
-                      <span className="inline-flex items-center text-xs px-2 py-0.5 rounded-full bg-sand/50 border border-sand text-ink/70 mb-2">
-                        {flag.category}
-                      </span>
-                    )}
-                    <div className="mt-2">
-                      <a
-                        href={explorerTx(myVote.txSignature)}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-xs text-muted hover:text-ink inline-flex items-center gap-1"
-                      >
-                        Your vote on-chain <ExternalLink className="h-3 w-3" />
-                      </a>
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
-          )}
-        </TabsContent>
-      </Tabs>
+function Stat({ label, value, icon, highlight }: { label: string; value: number; icon: React.ReactNode; highlight?: boolean }) {
+  return (
+    <div>
+      <div className="flex items-center gap-1.5 mb-1">{icon}<span className="text-[10px] uppercase tracking-wider text-white/40">{label}</span></div>
+      <div className={`text-2xl font-light tabular-nums ${highlight ? "text-[#0084ff]" : "text-white"}`}>{value}</div>
     </div>
   );
 }
 
 function EmptyState({ title, body }: { title: string; body: string }) {
   return (
-    <div className="container py-20 max-w-xl text-center animate-fade-in">
-      <ShieldCheck className="h-10 w-10 text-muted mx-auto mb-6" />
-      <h1 className="font-serif text-3xl tracking-tight mb-3">{title}</h1>
-      <p className="text-muted leading-relaxed">{body}</p>
+    <div className="min-h-screen bg-[#080c1a] flex items-center justify-center">
+      <div className="max-w-xl text-center px-6">
+        <ShieldCheck className="h-10 w-10 text-white/20 mx-auto mb-6" />
+        <h1 className="text-3xl font-light tracking-tight text-white mb-3">{title}</h1>
+        <p className="text-[#b8b8b8] leading-relaxed">{body}</p>
+      </div>
     </div>
   );
 }

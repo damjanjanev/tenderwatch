@@ -1,6 +1,8 @@
 "use client";
 
 import type { FlagRecord } from "@/lib/store";
+import { seedTenderReports } from "@/lib/tenderReports";
+import { seedBounties } from "@/lib/bounties";
 
 // Fake wallet addresses representing different citizens
 export const DEMO_WALLETS = {
@@ -18,7 +20,7 @@ const now = new Date();
 const daysAgo = (d: number) => new Date(now.getTime() - d * 86_400_000).toISOString();
 
 export const SEED_FLAGS: FlagRecord[] = [
-  // ── Aleksandra — 28 validated flags (Civic Investigator 🔍) ──────────────────
+  // ── Aleksandra — 28 flags (Civic Investigator) ───────────────────────────────
   ...Array.from({ length: 28 }, (_, i) => ({
     id: `seed_alek_${i}`,
     tenderId: ["T-2026-0142", "T-2026-0138", "T-2026-0124", "T-2026-0115", "T-2026-0108",
@@ -38,17 +40,9 @@ export const SEED_FLAGS: FlagRecord[] = [
     reasonHash: `hash_alek_${i}`,
     txSignature: `5aLeKsig${i}xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`,
     createdAt: daysAgo(60 - i * 2),
-    status: "VerifiedSuspicious" as const,
-    votes: [{
-      flagId: `seed_alek_${i}`,
-      verifierWallet: "VeriFier1Demo111111111111111111111111111111",
-      verdict: "Validate" as const,
-      txSignature: `voteAlek${i}sig`,
-      createdAt: daysAgo(59 - i * 2),
-    }],
   })),
 
-  // ── Bojan — 52 validated flags (Justice Guardian ⚖️) ────────────────────────
+  // ── Bojan — 52 flags (Justice Guardian) ─────────────────────────────────────
   ...Array.from({ length: 52 }, (_, i) => ({
     id: `seed_bojan_${i}`,
     tenderId: ["T-2026-0049", "T-2026-0077", "T-2026-0131", "T-2026-0108", "T-2026-0094",
@@ -67,17 +61,9 @@ export const SEED_FLAGS: FlagRecord[] = [
     reasonHash: `hash_bojan_${i}`,
     txSignature: `5B0jAnSiG${i}xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`,
     createdAt: daysAgo(90 - i),
-    status: "VerifiedSuspicious" as const,
-    votes: [{
-      flagId: `seed_bojan_${i}`,
-      verifierWallet: "VeriFier1Demo111111111111111111111111111111",
-      verdict: "Validate" as const,
-      txSignature: `voteBojan${i}sig`,
-      createdAt: daysAgo(89 - i),
-    }],
   })),
 
-  // ── Elena — 11 validated flags (Street Watchdog 🐕) ─────────────────────────
+  // ── Elena — 11 flags (Street Watchdog) ──────────────────────────────────────
   ...Array.from({ length: 11 }, (_, i) => ({
     id: `seed_elena_${i}`,
     tenderId: ["T-2026-0115", "T-2026-0124", "T-2026-0142", "T-2026-0094", "T-2026-0057"][i % 5],
@@ -88,17 +74,9 @@ export const SEED_FLAGS: FlagRecord[] = [
     reasonHash: `hash_elena_${i}`,
     txSignature: `5eLenASiG${i}xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`,
     createdAt: daysAgo(30 - i * 2),
-    status: "VerifiedSuspicious" as const,
-    votes: [{
-      flagId: `seed_elena_${i}`,
-      verifierWallet: "VeriFier2Demo111111111111111111111111111111",
-      verdict: "Validate" as const,
-      txSignature: `voteElena${i}sig`,
-      createdAt: daysAgo(29 - i * 2),
-    }],
   })),
 
-  // ── Dragan — 6 validated flags (almost at Street Watchdog) ──────────────────
+  // ── Dragan — 6 flags (almost at Street Watchdog) ────────────────────────────
   ...Array.from({ length: 6 }, (_, i) => ({
     id: `seed_dragan_${i}`,
     tenderId: ["T-2026-0099", "T-2026-0081", "T-2026-0073"][i % 3],
@@ -109,17 +87,9 @@ export const SEED_FLAGS: FlagRecord[] = [
     reasonHash: `hash_dragan_${i}`,
     txSignature: `5dRaGaNSiG${i}xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`,
     createdAt: daysAgo(15 - i),
-    status: "VerifiedSuspicious" as const,
-    votes: [{
-      flagId: `seed_dragan_${i}`,
-      verifierWallet: "VeriFier1Demo111111111111111111111111111111",
-      verdict: "Validate" as const,
-      txSignature: `voteDragan${i}sig`,
-      createdAt: daysAgo(14 - i),
-    }],
   })),
 
-  // ── Ivana — 3 pending flags (new user, no badge yet) ────────────────────────
+  // ── Ivana — 3 flags (new user, no badge yet) ────────────────────────────────
   {
     id: "seed_ivana_0",
     tenderId: "T-2026-0138",
@@ -131,8 +101,6 @@ export const SEED_FLAGS: FlagRecord[] = [
     reasonHash: "hash_ivana_0",
     txSignature: "5iVaNaSiG0xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     createdAt: daysAgo(3),
-    status: "Pending",
-    votes: [],
   },
   {
     id: "seed_ivana_1",
@@ -144,8 +112,6 @@ export const SEED_FLAGS: FlagRecord[] = [
     reasonHash: "hash_ivana_1",
     txSignature: "5iVaNaSiG1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     createdAt: daysAgo(1),
-    status: "Pending",
-    votes: [],
   },
   {
     id: "seed_ivana_2",
@@ -157,11 +123,9 @@ export const SEED_FLAGS: FlagRecord[] = [
     reasonHash: "hash_ivana_2",
     txSignature: "5iVaNaSiG2xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     createdAt: daysAgo(2),
-    status: "Pending",
-    votes: [],
   },
 
-  // ── Marko — 1 pending, 2 dismissed ──────────────────────────────────────────
+  // ── Marko — 3 flags ──────────────────────────────────────────────────────────
   {
     id: "seed_marko_0",
     tenderId: "T-2026-0119",
@@ -172,8 +136,6 @@ export const SEED_FLAGS: FlagRecord[] = [
     reasonHash: "hash_marko_0",
     txSignature: "5mArK0SiG0xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     createdAt: daysAgo(10),
-    status: "Pending",
-    votes: [],
   },
   {
     id: "seed_marko_1",
@@ -185,14 +147,6 @@ export const SEED_FLAGS: FlagRecord[] = [
     reasonHash: "hash_marko_1",
     txSignature: "5mArK0SiG1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     createdAt: daysAgo(20),
-    status: "DismissedAsSpam",
-    votes: [{
-      flagId: "seed_marko_1",
-      verifierWallet: "VeriFier2Demo111111111111111111111111111111",
-      verdict: "Reject",
-      txSignature: "voteMarko1sig",
-      createdAt: daysAgo(18),
-    }],
   },
   {
     id: "seed_marko_2",
@@ -204,17 +158,9 @@ export const SEED_FLAGS: FlagRecord[] = [
     reasonHash: "hash_marko_2",
     txSignature: "5mArK0SiG2xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     createdAt: daysAgo(25),
-    status: "DismissedAsSpam",
-    votes: [{
-      flagId: "seed_marko_2",
-      verifierWallet: "VeriFier1Demo111111111111111111111111111111",
-      verdict: "Reject",
-      txSignature: "voteMarko2sig",
-      createdAt: daysAgo(23),
-    }],
   },
 
-  // ── Stefan — 2 validated flags (new but promising) ──────────────────────────
+  // ── Stefan — 2 flags ─────────────────────────────────────────────────────────
   {
     id: "seed_stefan_0",
     tenderId: "T-2026-0057",
@@ -226,14 +172,6 @@ export const SEED_FLAGS: FlagRecord[] = [
     reasonHash: "hash_stefan_0",
     txSignature: "5sT3fAnSiG0xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     createdAt: daysAgo(7),
-    status: "VerifiedSuspicious",
-    votes: [{
-      flagId: "seed_stefan_0",
-      verifierWallet: "VeriFier1Demo111111111111111111111111111111",
-      verdict: "Validate",
-      txSignature: "voteStefan0sig",
-      createdAt: daysAgo(6),
-    }],
   },
   {
     id: "seed_stefan_1",
@@ -245,17 +183,9 @@ export const SEED_FLAGS: FlagRecord[] = [
     reasonHash: "hash_stefan_1",
     txSignature: "5sT3fAnSiG1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     createdAt: daysAgo(5),
-    status: "VerifiedSuspicious",
-    votes: [{
-      flagId: "seed_stefan_1",
-      verifierWallet: "VeriFier2Demo111111111111111111111111111111",
-      verdict: "Validate",
-      txSignature: "voteStefan1sig",
-      createdAt: daysAgo(4),
-    }],
   },
 
-  // ── Nina — 1 pending flag ─────────────────────────────────────────────────
+  // ── Nina — 1 flag ─────────────────────────────────────────────────────────────
   {
     id: "seed_nina_0",
     tenderId: "T-2026-0094",
@@ -267,19 +197,18 @@ export const SEED_FLAGS: FlagRecord[] = [
     reasonHash: "hash_nina_0",
     txSignature: "5N1NaSiG0xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     createdAt: daysAgo(1),
-    status: "Pending",
-    votes: [],
   },
 ];
 
-const SEED_KEY = "tenderwatch.seeded.v2";
+const SEED_KEY = "tenderwatch.seeded.v5";
 
 export function seedDemoData() {
   if (typeof window === "undefined") return;
   if (window.localStorage.getItem(SEED_KEY)) return; // already seeded
 
-  const existing = JSON.parse(window.localStorage.getItem("tenderwatch.flags.v2") || "[]");
-  const merged = [...SEED_FLAGS, ...existing];
-  window.localStorage.setItem("tenderwatch.flags.v2", JSON.stringify(merged));
+  window.localStorage.setItem("tenderwatch.flags.v5", JSON.stringify(SEED_FLAGS));
   window.localStorage.setItem(SEED_KEY, "1");
+
+  seedTenderReports();
+  seedBounties();
 }

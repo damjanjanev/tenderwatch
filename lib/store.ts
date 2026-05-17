@@ -32,8 +32,6 @@ export const BADGE_TIERS: BadgeTier[] = [
 ];
 
 // ── Core types ─────────────────────────────────────────────────────────────────
-export type FlagStatus = "Pending" | "VerifiedSuspicious" | "DismissedAsSpam";
-
 export type FlagRecord = {
   id: string;
   tenderId: string;
@@ -44,20 +42,10 @@ export type FlagRecord = {
   reasonHash: string;
   txSignature: string;
   createdAt: string;
-  status: FlagStatus;
-  votes: VoteRecord[];
-};
-
-export type VoteRecord = {
-  flagId: string;
-  verifierWallet: string;
-  verdict: "Validate" | "Reject";
-  txSignature: string;
-  createdAt: string;
 };
 
 // ── Storage ────────────────────────────────────────────────────────────────────
-const STORAGE_KEY = "tenderwatch.flags.v2";
+const STORAGE_KEY = "tenderwatch.flags.v5";
 const SUBS = new Set<() => void>();
 
 function read(): FlagRecord[] {
@@ -109,23 +97,6 @@ export function addFlag(flag: FlagRecord) {
   write(current);
 }
 
-// threshold=1: one journalist validation resolves the flag
-export function addVote(flagId: string, vote: VoteRecord, threshold = 1) {
-  const current = read();
-  const idx = current.findIndex((f) => f.id === flagId);
-  if (idx === -1) return;
-  const flag = current[idx];
-  if (flag.status !== "Pending") return;
-  if (flag.votes.some((v) => v.verifierWallet === vote.verifierWallet)) return;
-  flag.votes.push(vote);
-  const validated = flag.votes.filter((v) => v.verdict === "Validate").length;
-  const rejected  = flag.votes.filter((v) => v.verdict === "Reject").length;
-  if (validated >= threshold) flag.status = "VerifiedSuspicious";
-  else if (rejected >= threshold) flag.status = "DismissedAsSpam";
-  current[idx] = flag;
-  write(current);
-}
-
 export function resetStore() {
   if (typeof window === "undefined") return;
   window.localStorage.removeItem(STORAGE_KEY);
@@ -133,19 +104,17 @@ export function resetStore() {
 }
 
 // ── Badge helpers ──────────────────────────────────────────────────────────────
-export function getValidatedFlagCount(walletAddress: string): number {
-  return read().filter(
-    (f) => f.flaggerWallet === walletAddress && f.status === "VerifiedSuspicious"
-  ).length;
+export function getFlagCount(walletAddress: string): number {
+  return read().filter((f) => f.flaggerWallet === walletAddress).length;
 }
 
 export function getBadgeTier(walletAddress: string): BadgeTier | null {
-  const count = getValidatedFlagCount(walletAddress);
+  const count = getFlagCount(walletAddress);
   return [...BADGE_TIERS].reverse().find((t) => count >= t.minFlags) ?? null;
 }
 
 export function getNextBadgeTier(walletAddress: string): BadgeTier | null {
-  const count = getValidatedFlagCount(walletAddress);
+  const count = getFlagCount(walletAddress);
   return BADGE_TIERS.find((t) => count < t.minFlags) ?? null;
 }
 

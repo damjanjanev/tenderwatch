@@ -1,4 +1,4 @@
-import { TENDERS } from "./tenders";
+import { TENDERS, Tender } from "./tenders";
 
 export type MinistrySpend = {
   ministry: string;
@@ -20,6 +20,12 @@ export type SpendingStats = {
   topMinistry: string;
   topContractor: string;
   avgContractEUR: number;
+};
+
+export type BudgetYear = {
+  year: number;
+  totalEUR: number;
+  byMinistry: Record<string, number>; // ministry shortName → EUR
 };
 
 // Shorten long ministry names for chart labels
@@ -88,3 +94,49 @@ export function getSpendingStats(): SpendingStats {
     avgContractEUR: Math.round(totalEUR / TENDERS.length),
   };
 }
+
+export function getContractsByContractor(contractor: string): Tender[] {
+  return TENDERS.filter(
+    (t) => t.contractor.toLowerCase() === contractor.toLowerCase()
+  );
+}
+
+// Historical budget data — 2024 is fabricated but plausible, slightly lower than 2025 tender data
+export const BUDGET_HISTORY: BudgetYear[] = [
+  {
+    year: 2024,
+    totalEUR: 42_800_000,
+    byMinistry: {
+      Transport: 8_100_000,
+      Education: 7_400_000,
+      Health: 6_900_000,
+      Interior: 5_200_000,
+      Environment: 4_800_000,
+      Finance: 3_600_000,
+      Economy: 2_900_000,
+      Culture: 1_700_000,
+      "Gen. Secretariat": 1_200_000,
+      "City of Skopje": 3_100_000,
+      Customs: 2_100_000,
+      MRT: 800_000,
+    },
+  },
+  {
+    year: 2025,
+    totalEUR: 55_360_000,
+    byMinistry: {
+      Transport: 10_600_000,
+      Education: 9_800_000,
+      Health: 8_450_000,
+      Interior: 6_700_000,
+      Environment: 6_200_000,
+      Finance: 4_400_000,
+      Economy: 3_800_000,
+      Culture: 2_200_000,
+      "Gen. Secretariat": 1_650_000,
+      "City of Skopje": 4_100_000,
+      Customs: 2_700_000,
+      MRT: 1_100_000,
+    },
+  },
+];

@@ -1,7 +1,7 @@
 "use client";
 
 import { Shield, Search, Scale, Award, LucideIcon } from "lucide-react";
-import { getBadgeTier, getNextBadgeTier, getValidatedFlagCount, BADGE_TIERS } from "@/lib/store";
+import { getBadgeTier, getNextBadgeTier, getFlagCount, BADGE_TIERS } from "@/lib/store";
 
 const ICON_MAP: Record<string, LucideIcon> = {
   shield: Shield,
@@ -16,7 +16,7 @@ interface BadgeDisplayProps {
 }
 
 export function BadgeDisplay({ walletAddress, compact = false }: BadgeDisplayProps) {
-  const count   = getValidatedFlagCount(walletAddress);
+  const count   = getFlagCount(walletAddress);
   const current = getBadgeTier(walletAddress);
   const next    = getNextBadgeTier(walletAddress);
 
@@ -59,7 +59,7 @@ export function BadgeDisplay({ walletAddress, compact = false }: BadgeDisplayPro
           </div>
           <div>
             <p className={`text-xl font-bold tracking-tight ${current.colorClass}`}>{current.name}</p>
-            <p className="text-xs text-muted mt-0.5">{count} validated flag{count !== 1 ? "s" : ""}</p>
+            <p className="text-xs text-muted mt-0.5">{count} flag{count !== 1 ? "s" : ""} submitted</p>
           </div>
         </div>
       ) : (
@@ -69,7 +69,7 @@ export function BadgeDisplay({ walletAddress, compact = false }: BadgeDisplayPro
           </div>
           <div>
             <p className="text-xl font-bold tracking-tight text-muted">No badge yet</p>
-            <p className="text-xs text-muted mt-0.5">{count} validated flag{count !== 1 ? "s" : ""}</p>
+            <p className="text-xs text-muted mt-0.5">{count} flag{count !== 1 ? "s" : ""} submitted</p>
           </div>
         </div>
       )}
