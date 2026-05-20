@@ -140,7 +140,7 @@ export default function SpendingPage() {
           <p className="text-[#0084ff] text-[11px] uppercase tracking-[0.25em] font-medium mb-6">
             Spend by institution
           </p>
-          <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-6" style={{ height: 440 }}>
+          <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 md:p-6" style={{ height: 320 }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={byMinistry} layout="vertical" margin={{ top: 0, right: 24, left: 0, bottom: 0 }}>
                 <XAxis type="number" tickFormatter={(v) => `€${(v / 1_000_000).toFixed(1)}M`} tick={{ fontSize: 12, fill: "#ffffff50" }} axisLine={false} tickLine={false} />
@@ -162,7 +162,7 @@ export default function SpendingPage() {
             Year-over-year comparison
           </p>
           <p className="text-sm text-white/40 mb-6">Budget allocation 2024 vs 2025 by ministry sector</p>
-          <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-6" style={{ height: 420 }}>
+          <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 md:p-6" style={{ height: 300 }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={yoyData} layout="vertical" margin={{ top: 0, right: 24, left: 0, bottom: 0 }} barCategoryGap="30%" barGap={4}>
                 <XAxis type="number" tickFormatter={(v) => `€${(v / 1_000_000).toFixed(1)}M`} tick={{ fontSize: 12, fill: "#ffffff50" }} axisLine={false} tickLine={false} />
@@ -211,7 +211,7 @@ export default function SpendingPage() {
             Top contractors by total received
           </p>
           <div className="rounded-xl border border-white/[0.06] overflow-hidden">
-            <div className="grid grid-cols-12 px-5 py-3 border-b border-white/[0.06]" style={{ background: "rgba(255,255,255,0.02)" }}>
+            <div className="hidden sm:grid grid-cols-12 px-5 py-3 border-b border-white/[0.06]" style={{ background: "rgba(255,255,255,0.02)" }}>
               <span className="col-span-1 text-[11px] uppercase tracking-wider text-white/40 font-semibold">#</span>
               <span className="col-span-5 text-[11px] uppercase tracking-wider text-white/40 font-semibold">Contractor</span>
               <span className="col-span-2 text-[11px] uppercase tracking-wider text-white/40 font-semibold text-right">Contracts</span>
@@ -221,20 +221,33 @@ export default function SpendingPage() {
             {topContractors.map((c, i) => {
               const isExpanded = expandedContractor === c.contractor;
               const realTenders = getContractsByContractor(c.contractor);
-              const fakeTenders = FAKE_TENDERS[c.contractor] ?? [];
               const tenderList = realTenders.length > 0 ? realTenders : null;
 
               return (
                 <div key={c.contractor} className="border-b border-white/[0.04] last:border-0">
-                  <button onClick={() => toggleContractor(c.contractor)} className="w-full grid grid-cols-12 px-5 py-4 hover:bg-white/[0.02] transition-colors text-left">
-                    <span className="col-span-1 font-mono text-sm text-white/40">{i + 1}</span>
-                    <span className="col-span-5 text-sm text-white font-medium truncate pr-4 flex items-center gap-2">
-                      {c.contractor}
-                      {isExpanded ? <ChevronUp className="h-3 w-3 text-white/40 shrink-0" /> : <ChevronDown className="h-3 w-3 text-white/40 shrink-0" />}
-                    </span>
-                    <span className="col-span-2 font-mono text-sm text-white/50 text-right">{c.contractCount}</span>
-                    <span className="col-span-2 font-mono text-sm font-bold text-[#0084ff] text-right">{formatEUR(c.totalEUR)}</span>
-                    <span className="col-span-2 text-sm text-white/50 text-right">{c.ministries.length}</span>
+                  <button onClick={() => toggleContractor(c.contractor)} className="w-full px-5 py-4 hover:bg-white/[0.02] transition-colors text-left">
+                    {/* Mobile layout */}
+                    <div className="flex items-center justify-between gap-3 sm:hidden">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="font-mono text-xs text-white/40 shrink-0">{i + 1}</span>
+                        <span className="text-sm text-white font-medium truncate">{c.contractor}</span>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="font-mono text-sm font-bold text-[#0084ff]">{formatEUR(c.totalEUR)}</span>
+                        {isExpanded ? <ChevronUp className="h-3 w-3 text-white/40" /> : <ChevronDown className="h-3 w-3 text-white/40" />}
+                      </div>
+                    </div>
+                    {/* Desktop layout */}
+                    <div className="hidden sm:grid grid-cols-12">
+                      <span className="col-span-1 font-mono text-sm text-white/40">{i + 1}</span>
+                      <span className="col-span-5 text-sm text-white font-medium truncate pr-4 flex items-center gap-2">
+                        {c.contractor}
+                        {isExpanded ? <ChevronUp className="h-3 w-3 text-white/40 shrink-0" /> : <ChevronDown className="h-3 w-3 text-white/40 shrink-0" />}
+                      </span>
+                      <span className="col-span-2 font-mono text-sm text-white/50 text-right">{c.contractCount}</span>
+                      <span className="col-span-2 font-mono text-sm font-bold text-[#0084ff] text-right">{formatEUR(c.totalEUR)}</span>
+                      <span className="col-span-2 text-sm text-white/50 text-right">{c.ministries.length}</span>
+                    </div>
                   </button>
 
                   {isExpanded && (
