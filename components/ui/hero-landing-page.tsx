@@ -241,7 +241,7 @@ export function TuringLanding() {
             {
               n: "03",
               title: "Journalists verify",
-              body: "Credentialed journalists review every flag. Accurate tips earn CONTR tokens on-chain.",
+              body: "Credentialed journalists review every flag. Accurate tips earn contr tokens on-chain.",
               href: "/leaderboard",
             },
           ].map(({ n, title, body, href }, i) => (

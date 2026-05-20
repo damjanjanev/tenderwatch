@@ -1,4 +1,4 @@
-# conTR
+# contr
 
 Public contract transparency platform — citizens flag suspicious government tenders, journalists verify, every record is stored on blockchain permanently.
 
@@ -15,7 +15,7 @@ A civic accountability platform for tracking public procurement contracts:
 3. Your flag is hashed and stored on-chain — publicly visible on the tender and on `/suspicious`
 4. Credentialed journalists review flagged tenders on `/verifier`, publish reports, and give a verdict (Suspicious / Not Suspicious)
 5. A consensus of journalist reports moves the tender to **Verified Suspicious**
-6. Citizens whose flags hit verified-suspicious tenders earn **conTR tokens** — token levels unlock titles and voting weight
+6. Citizens whose flags hit verified-suspicious tenders earn **contr tokens** — token levels unlock titles and voting weight
 7. `/leaderboard` ranks citizens by tokens and journalists by credibility score
 8. Every flag and report links to a real blockchain Explorer transaction
 
@@ -35,7 +35,7 @@ A civic accountability platform for tracking public procurement contracts:
 | `/wallet` | Platform treasury ledger — all on-chain deposits and payouts |
 | `/suspicious` | Community Flagged (pending) + Verified Suspicious board |
 | `/verifier` | Journalist dashboard — publish reports, track credibility score |
-| `/leaderboard` | Citizens ranked by conTR tokens · Journalists ranked by credibility |
+| `/leaderboard` | Citizens ranked by contr tokens · Journalists ranked by credibility |
 
 ---
 
@@ -93,7 +93,7 @@ Dark navy throughout. Background: `#080c1a`. Accent: `#0084ff`. All pages use a 
 
 ## Token + incentive system
 
-Citizens earn **conTR tokens** for accurate flags:
+Citizens earn **contr tokens** for accurate flags:
 
 | Level | Tokens | Title |
 |-------|--------|-------|
@@ -172,7 +172,7 @@ tenderwatch/
 │   ├── spending.ts              # Ministry spending data
 │   ├── bounties.ts              # Bounty board data
 │   ├── tenderReports.ts         # Journalist report store + scoring
-│   ├── points.ts                # conTR token logic + levels
+│   ├── points.ts                # contr token logic + levels
 │   ├── publicWallet.ts          # Platform treasury ledger data
 │   ├── store.ts                 # Flag store + badge tiers + verifier allowlist
 │   ├── seed.ts                  # Auto-seeds demo data on first load

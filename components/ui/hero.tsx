@@ -202,7 +202,7 @@ export default function ContrHero() {
               {
                 n: "03",
                 title: "Journalists verify",
-                body: "Credentialed journalists review flags. Accurate tips earn CONTR tokens as proof of contribution.",
+                body: "Credentialed journalists review flags. Accurate tips earn contr tokens as proof of contribution.",
               },
             ].map(({ n, title, body }) => (
               <motion.div

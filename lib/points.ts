@@ -7,7 +7,7 @@ import { getTenderReportStatus } from "@/lib/tenderReports";
 // ── Token system ──────────────────────────────────────────────────────────────
 
 /** Ticker symbol shown in the UI */
-export const TOKEN_TICKER = "CONTR";
+export const TOKEN_TICKER = "contr";
 
 /** Tokens awarded per accurate flag (flag on a tender that became VerifiedSuspicious) */
 export const TOKENS_PER_ACCURATE_FLAG = 10;
