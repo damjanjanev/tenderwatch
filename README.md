@@ -1,5 +1,7 @@
 # contr
 
+ tenderwatch-eight.vercel.app - live preview
+
 Public contract transparency platform — citizens flag suspicious government tenders, journalists verify, every record is stored on blockchain permanently.
 
 > Anyone can flag. Verification has skin in the game. The record is permanent.
