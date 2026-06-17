@@ -1,6 +1,6 @@
 # contr
 
- [tenderwatch](tenderwatch-eight.vercel.app) - live preview
+ [tenderwatch](https://tenderwatch-eight.vercel.app) - live preview
 
 Public contract transparency platform — citizens flag suspicious government tenders, journalists verify, every record is stored on blockchain permanently.
 
